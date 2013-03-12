@@ -1,7 +1,11 @@
-Please include this notice with the runtime environment:
+In editor:
+use CTRL+VK_1\2\3 for adding a new block
+1 - simple block
+2 - wooden block
+3 - block with random bonus
 
-This library is distributed under the terms of the GNU LGPL license:
-http://www.gnu.org/copyleft/lesser.html
+for saving level please push CTRL and write a filename with .txt
 
-The source is available from the libraries page at the SDL website:
-http://www.libsdl.org/
+In game:
+use mouse for moving the pole.
+
