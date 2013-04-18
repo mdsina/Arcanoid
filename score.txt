@@ -1,3 +1,0 @@
-Unknown 5000
-MDS 93
-KUKA 1293
