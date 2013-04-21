@@ -4,6 +4,7 @@ interface
 
 uses wincrt;
 function textfileread(fn: pchar): pchar;
+procedure ZMem (var obj; sz: dword);
 
 implementation
 function textfileread(fn: pchar): pchar;
@@ -27,5 +28,10 @@ begin
     freemem(content)
   else
     textfileread := content;
+end;
+
+procedure   ZMem (var obj; sz: dword);
+begin
+ fillchar (obj, sz, 0);
 end;
 end.

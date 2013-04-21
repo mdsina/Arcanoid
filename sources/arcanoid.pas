@@ -1,7 +1,12 @@
 {$define debug}
+{$ifdef debug}
+	{$APPTYPE CONSOLE}
+{$else}
+	{$APPTYPE CONSOLE}
+{$endif}
 uses
   windows, dglopengl, sysutils, shlobj, sdl, sdl_mixer, png,
-  libcurl, crt, arctypes, arcread, arcphys, arcdraw;
+  libcurl, crt, arctypes, arcread, arcphys, arcdraw, commdlg, arcsystem;
 
 Const
 	AUDIO_FREQUENCY : Integer = 22050;
@@ -117,8 +122,6 @@ var
   pexit			: 	boolean = false;
 
   over			: 	string;
-
-
 
 //********************
 //*       МЫШЬ       *
@@ -491,7 +494,8 @@ begin
   WindowClass.cbClsExtra := 0;
   WindowClass.cbWndExtra := 0;
   WindowClass.hInstance := system.MainInstance;
-  WindowClass.hIcon := LoadIcon(0, idi_Application);
+  WindowClass.hIcon := LoadImage(0, 'ico.ico', IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_LOADFROMFILE);
+  //WindowClass.hIconSm := LoadImage(0, 'ico.ico', IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_LOADFROMFILE);
   WindowClass.hCursor := LoadCursor(0, idc_Arrow);
   WindowClass.hbrBackground := GetStockObject(WHITE_BRUSH);
   WindowClass.lpszMenuName := nil;
@@ -504,10 +508,7 @@ begin
   windowRect.bottom:=windowRect.top + height;
   windowRect.right:=windowRect.left + width;
 
-  AdjustWindowRect(@windowRect, WS_CAPTION OR
-                           WS_POPUPWINDOW OR WS_VISIBLE
-                           OR WS_CLIPSIBLINGS OR WS_CLIPCHILDREN, false);
-
+  AdjustWindowRect(@windowRect, WS_CAPTION OR WS_POPUPWINDOW OR WS_VISIBLE OR WS_CLIPSIBLINGS OR WS_CLIPCHILDREN, false);
 end;
 
 function WindowCreate(pcApplicationName : pChar): HWnd;
@@ -1141,92 +1142,92 @@ end;
 
 procedure InitTexture;
 begin
-	Tex.wLive[1]:=Texture_Init('Images\wood_bricks\b\b1.bmp');
-	Tex.wLive[2]:=Texture_Init('Images\wood_bricks\b\b2.bmp');
-	Tex.wLive[3]:=Texture_Init('Images\wood_bricks\b\b3.bmp');
+	Tex.wLive[1]:=Texture_Init('Data\Images\wood_bricks\b\b1.bmp');
+	Tex.wLive[2]:=Texture_Init('Data\Images\wood_bricks\b\b2.bmp');
+	Tex.wLive[3]:=Texture_Init('Data\Images\wood_bricks\b\b3.bmp');
 
-	Tex.wALive[1]:=Texture_Init('Images\wood_bricks\b1.bmp');
-	Tex.wALive[2]:=Texture_Init('Images\wood_bricks\b2.bmp');
-	Tex.wALive[3]:=Texture_Init('Images\wood_bricks\b3.bmp');
+	Tex.wALive[1]:=Texture_Init('Data\Images\wood_bricks\b1.bmp');
+	Tex.wALive[2]:=Texture_Init('Data\Images\wood_bricks\b2.bmp');
+	Tex.wALive[3]:=Texture_Init('Data\Images\wood_bricks\b3.bmp');
 
-	Tex.bkg[1]:=Texture_Init('Images\bkg\bkg1.bmp');
-	Tex.bkg[2]:=Texture_Init('Images\bkg\bkg2.bmp');
-	Tex.bkg[3]:=Texture_Init('Images\bkg\bkg3.bmp');
-	Tex.bkg[4]:=Texture_Init('Images\bkg\bkg4.bmp');
-	Tex.bkg[5]:=Texture_Init('Images\bkg\bkg5.bmp');
-	Tex.bkg[6]:=Texture_Init('Images\bkg\bkg6.bmp');
+	Tex.bkg[1]:=Texture_Init('Data\Images\bkg\bkg1.bmp');
+	Tex.bkg[2]:=Texture_Init('Data\Images\bkg\bkg2.bmp');
+	Tex.bkg[3]:=Texture_Init('Data\Images\bkg\bkg3.bmp');
+	Tex.bkg[4]:=Texture_Init('Data\Images\bkg\bkg4.bmp');
+	Tex.bkg[5]:=Texture_Init('Data\Images\bkg\bkg5.bmp');
+	Tex.bkg[6]:=Texture_Init('Data\Images\bkg\bkg6.bmp');
 
-	Tex.home:=Texture_Init('Images\gui\return.bmp');
+	Tex.home:=Texture_Init('Data\Images\gui\return.bmp');
 
-	Tex.tpSymbol[1]:=Texture_Init('Images\numbers\0.bmp');
-	Tex.tpSymbol[2]:=Texture_Init('Images\numbers\1.bmp');
-	Tex.tpSymbol[3]:=Texture_Init('Images\numbers\2.bmp');
-	Tex.tpSymbol[4]:=Texture_Init('Images\numbers\3.bmp');
-	Tex.tpSymbol[5]:=Texture_Init('Images\numbers\4.bmp');
-	Tex.tpSymbol[6]:=Texture_Init('Images\numbers\5.bmp');
-	Tex.tpSymbol[7]:=Texture_Init('Images\numbers\6.bmp');
-	Tex.tpSymbol[8]:=Texture_Init('Images\numbers\7.bmp');
-	Tex.tpSymbol[9]:=Texture_Init('Images\numbers\8.bmp');
-	Tex.tpSymbol[10]:=Texture_Init('Images\numbers\9.bmp');
+	Tex.tpSymbol[1]:=Texture_Init('Data\Images\numbers\0.bmp');
+	Tex.tpSymbol[2]:=Texture_Init('Data\Images\numbers\1.bmp');
+	Tex.tpSymbol[3]:=Texture_Init('Data\Images\numbers\2.bmp');
+	Tex.tpSymbol[4]:=Texture_Init('Data\Images\numbers\3.bmp');
+	Tex.tpSymbol[5]:=Texture_Init('Data\Images\numbers\4.bmp');
+	Tex.tpSymbol[6]:=Texture_Init('Data\Images\numbers\5.bmp');
+	Tex.tpSymbol[7]:=Texture_Init('Data\Images\numbers\6.bmp');
+	Tex.tpSymbol[8]:=Texture_Init('Data\Images\numbers\7.bmp');
+	Tex.tpSymbol[9]:=Texture_Init('Data\Images\numbers\8.bmp');
+	Tex.tpSymbol[10]:=Texture_Init('Data\Images\numbers\9.bmp');
 
-	Tex.gMenu[1]:=Texture_Init('Images\gui\background.bmp');
-	Tex.gMenu[2]:=Texture_Init('Images\gui\mainlayer.bmp');
-	Tex.gMenu[3]:=Texture_Init('Images\gui\background2.bmp');
+	Tex.gMenu[1]:=Texture_Init('Data\Images\gui\background.bmp');
+	Tex.gMenu[2]:=Texture_Init('Data\Images\gui\mainlayer.bmp');
+	Tex.gMenu[3]:=Texture_Init('Data\Images\gui\background2.bmp');
 
-	Tex.iLive:=Texture_Init('Images\ice_bricks\b1.bmp');
-	Tex.Ball:=Texture_Init( 'Images\svi.bmp');
-	Tex.Poll:=Texture_Init( 'Images\texture.bmp');
-	Tex.Magic:=Texture_Init('Images\other_bricks\b1.bmp');
+	Tex.iLive:=Texture_Init('Data\Images\ice_bricks\b1.bmp');
+	Tex.Ball:=Texture_Init( 'Data\Images\svi.bmp');
+	Tex.Poll:=Texture_Init( 'Data\Images\texture.bmp');
+	Tex.Magic:=Texture_Init('Data\Images\other_bricks\b1.bmp');
 
-	Tex.TBonus[1]:=Texture_Init('Images\other_bricks\b2.bmp');
-	Tex.TBonus[2]:=Texture_Init('Images\other_bricks\b3.bmp');
-	Tex.TBonus[3]:=Texture_Init('Images\other_bricks\b4.bmp');
-	Tex.TBonus[4]:=Texture_Init('Images\other_bricks\b5.bmp');
-	Tex.TBonus[5]:=Texture_Init('Images\other_bricks\b6.bmp');
-	Tex.TBonus[6]:=Texture_Init('Images\other_bricks\b7.bmp');
-	Tex.TBonus[7]:=Texture_Init('Images\other_bricks\b8.bmp');
+	Tex.TBonus[1]:=Texture_Init('Data\Images\other_bricks\b2.bmp');
+	Tex.TBonus[2]:=Texture_Init('Data\Images\other_bricks\b3.bmp');
+	Tex.TBonus[3]:=Texture_Init('Data\Images\other_bricks\b4.bmp');
+	Tex.TBonus[4]:=Texture_Init('Data\Images\other_bricks\b5.bmp');
+	Tex.TBonus[5]:=Texture_Init('Data\Images\other_bricks\b6.bmp');
+	Tex.TBonus[6]:=Texture_Init('Data\Images\other_bricks\b7.bmp');
+	Tex.TBonus[7]:=Texture_Init('Data\Images\other_bricks\b8.bmp');
 
-	Tex.Tbkg:=Texture_Init('Images\gui\b1.bmp');
+	Tex.Tbkg:=Texture_Init('Data\Images\gui\b1.bmp');
 
-	Tex.wf[1]:=Texture_Init('Images\gui\win.bmp');
-	Tex.wf[2]:=Texture_Init('Images\gui\fail.bmp');
-	Tex.Next:=Texture_Init('Images\gui\next.bmp');
+	Tex.wf[1]:=Texture_Init('Data\Images\gui\win.bmp');
+	Tex.wf[2]:=Texture_Init('Data\Images\gui\fail.bmp');
+	Tex.Next:=Texture_Init('Data\Images\gui\next.bmp');
 
-	Tex.MenuItemsf[1]:=Texture_Init('Images\gui\button1.bmp');
-	Tex.MenuItemsf[2]:=Texture_Init('Images\gui\button2.bmp');
-	Tex.MenuItemsf[3]:=Texture_Init('Images\gui\button3.bmp');
-	Tex.MenuItemsf[4]:=Texture_Init('Images\gui\button4.bmp');
-	Tex.MenuItemsf[5]:=Texture_Init('Images\gui\button5.bmp');
+	Tex.MenuItemsf[1]:=Texture_Init('Data\Images\gui\button1.bmp');
+	Tex.MenuItemsf[2]:=Texture_Init('Data\Images\gui\button2.bmp');
+	Tex.MenuItemsf[3]:=Texture_Init('Data\Images\gui\button3.bmp');
+	Tex.MenuItemsf[4]:=Texture_Init('Data\Images\gui\button4.bmp');
+	Tex.MenuItemsf[5]:=Texture_Init('Data\Images\gui\button5.bmp');
 
-	Tex.MenuItemsi[1]:=Texture_Init('Images\gui\btn2\button1.bmp');
-	Tex.MenuItemsi[2]:=Texture_Init('Images\gui\btn2\button2.bmp');
-	Tex.MenuItemsi[3]:=Texture_Init('Images\gui\btn2\button3.bmp');
-	Tex.MenuItemsi[4]:=Texture_Init('Images\gui\btn2\button4.bmp');
-	Tex.MenuItemsi[5]:=Texture_Init('Images\gui\btn2\button5.bmp');
+	Tex.MenuItemsi[1]:=Texture_Init('Data\Images\gui\btn2\button1.bmp');
+	Tex.MenuItemsi[2]:=Texture_Init('Data\Images\gui\btn2\button2.bmp');
+	Tex.MenuItemsi[3]:=Texture_Init('Data\Images\gui\btn2\button3.bmp');
+	Tex.MenuItemsi[4]:=Texture_Init('Data\Images\gui\btn2\button4.bmp');
+	Tex.MenuItemsi[5]:=Texture_Init('Data\Images\gui\btn2\button5.bmp');
 
-	Tex.gHelp[1]:=Texture_Init('Images\gui\manual.bmp');
-	Tex.gHelp[2]:=Texture_Init('Images\gui\back.bmp');
+	Tex.gHelp[1]:=Texture_Init('Data\Images\gui\manual.bmp');
+	Tex.gHelp[2]:=Texture_Init('Data\Images\gui\back.bmp');
 
-	Tex.gEdit[1]:=Texture_Init('Images\gui\b2.bmp');
-	Tex.gEdit[2]:=Texture_Init('Images\gui\b2_e.bmp');
+	Tex.gEdit[1]:=Texture_Init('Data\Images\gui\b2.bmp');
+	Tex.gEdit[2]:=Texture_Init('Data\Images\gui\b2_e.bmp');
 
-	Tex.CheckBox:=Texture_Init('Images\gui\checkbox.bmp');
-	Tex.CheckBoxd:=Texture_Init('Images\gui\checkboxd.bmp');
+	Tex.CheckBox:=Texture_Init('Data\Images\gui\checkbox.bmp');
+	Tex.CheckBoxd:=Texture_Init('Data\Images\gui\checkboxd.bmp');
 
-	Tex.mHelp[1]:=Texture_Init('Images\gui\help\editor.bmp');
-	Tex.mHelp[2]:=Texture_Init('Images\gui\help\game.bmp');
-	Tex.mHelp[3]:=Texture_Init('Images\gui\help\info.bmp');
+	Tex.mHelp[1]:=Texture_Init('Data\Images\gui\help\editor.bmp');
+	Tex.mHelp[2]:=Texture_Init('Data\Images\gui\help\game.bmp');
+	Tex.mHelp[3]:=Texture_Init('Data\Images\gui\help\info.bmp');
 
-	Tex.mHelph[1]:=Texture_Init('Images\gui\help\editorh.bmp');
-	Tex.mHelph[2]:=Texture_Init('Images\gui\help\gameh.bmp');
-	Tex.mHelph[3]:=Texture_Init('Images\gui\help\infoh.bmp');
+	Tex.mHelph[1]:=Texture_Init('Data\Images\gui\help\editorh.bmp');
+	Tex.mHelph[2]:=Texture_Init('Data\Images\gui\help\gameh.bmp');
+	Tex.mHelph[3]:=Texture_Init('Data\Images\gui\help\infoh.bmp');
 
-	Tex.back[1]:=Texture_Init('Images\gui\back.bmp');
-	Tex.back[2]:=Texture_Init('Images\gui\backh.bmp');
+	Tex.back[1]:=Texture_Init('Data\Images\gui\back.bmp');
+	Tex.back[2]:=Texture_Init('Data\Images\gui\backh.bmp');
 
-	Tex.mBkg:=Texture_Init('Images\bkg\mbkg.bmp');
-	Tex.return:=Texture_Init('Images\gui\repeat.bmp');
-	Tex.kMenu:=Texture_Init('Images\gui\mmenu.bmp');
+	Tex.mBkg:=Texture_Init('Data\Images\bkg\mbkg.bmp');
+	Tex.return:=Texture_Init('Data\Images\gui\repeat.bmp');
+	Tex.kMenu:=Texture_Init('Data\Images\gui\mmenu.bmp');
 end;
 
 procedure Timers;
@@ -1359,8 +1360,9 @@ begin
 end;
 
 procedure renderscene;
+var pFileRecord:FileRecord; F:Text; filebool: FileRecord; myfilebool:boolean; Fb: file of Brick;
 begin
-{$ifdef debug}
+		{$ifdef debug}
 			Writeln(date);
 		{$endif}
 		// glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB4, 0, 0, 1024, 768, 0);
@@ -1449,23 +1451,34 @@ begin
 				FileResult:=false;
 			end;
 			
-			if GetKeyState(VK_CONTROL) and 128>=128	then
+			if (GetKeyState(VK_CONTROL) and 128)>=128	then
 			begin
-				Read(Filename);
-				Assign(TFile2,FileName);
-				Rewrite(TFile2);
-				//    FileResult:=true;
-				for i:=1 to 256 do	begin
-					Writeln(TFile2, bricks[i].lives,
-									bricks[i].box.x,
-									bricks[i].box.y,
-									bricks[i].box.width,
-									bricks[i].box.height,
-									bricks[i].typei,
-									bricks[i].tType);
-				end;
-				Close(TFile2);
+				filebool:=MySaveFileDialog();
+				if filebool.bool=true then	begin
+					if filebool.filetype=1 then begin
+						Assign(Fb, filebool.filename_with_path);
+						Rewrite(Fb);
+						for i:=1 to 256 do
+                            Write(Fb,  bricks[i]);
 
+						Close(Fb);
+					end else begin
+						Assign(F, filebool.filename_with_path);
+						Rewrite(F);
+						for i:=1 to 256 do	begin
+							Writeln(F,  bricks[i].lives,
+										bricks[i].box.x,
+										bricks[i].box.y,
+										bricks[i].box.width,
+										bricks[i].box.height,
+										bricks[i].typei,
+										bricks[i].tType);
+						end;
+						Close(F);	
+					end;
+					filebool.bool:=false;
+				end;
+				
 			end;
 				{if GetKeyState(VK_RETURN) and 128>=128 then begin
 									if Assigned(hCurl) then

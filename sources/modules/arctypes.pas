@@ -20,7 +20,11 @@ Type
 	  width	 : real;
 	  height : real;
   end;
-  
+  FileRecord = record
+	filetype: integer;
+	filename_with_path: string;
+	bool: boolean;
+  end;
   fsqVertex = record
 	 position: float3;
 	 texcoord: float2;
