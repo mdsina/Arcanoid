@@ -4,6 +4,9 @@
 {$else}
 	{$APPTYPE CONSOLE}
 {$endif}
+
+{$COPERATORS ON}
+
 uses
   windows, dglopengl, sysutils, shlobj, sdl, sdl_mixer, png,
   libcurl, crt, arctypes, arcread, arcphys, arcdraw, commdlg, arcsystem;
@@ -917,7 +920,7 @@ begin
 	end;
 end;
 
-procedure checkbox_draw(lx,ly:integer; lst:integer);
+procedure checkbox_draw(lx,ly:integer; lst:integer); 
 begin
 	kx:=lx; ky:=ly; st:=lst;
 	if checked[st]=true
@@ -931,7 +934,7 @@ procedure bkg_scrolling;
 begin
 
 	glBindTexture(GL_TEXTURE_2D, Tex.gMenu[3]);
-    glBegin( GL_QUADS );
+    glBegin( GL_QUADS );          
 		glTexCoord2f(_x01, 0.0);   glVertex2f(0, height);
 		glTexCoord2f(_x02, 0.0);   glVertex2f(width, height);
 		glTexCoord2f(_x03, 1.0);   glVertex2f(width, 0);
@@ -1645,14 +1648,19 @@ begin
 	ProgramObject        := glCreateProgram();
 	VertexShaderObject   := glCreateShader(GL_VERTEX_SHADER);
 	FragmentShaderObject := glCreateShader(GL_FRAGMENT_SHADER);	
-	fs2:=textfileread('D:\SDL\Data\Shaders\Gaussin\g.fs');
-	vs2:=textfileread('D:\SDL\Data\Shaders\Gaussin\g.vs');
+
+	fs2:=textfileread('Data\Shaders\Gaussin\g.fs');
+	vs2:=textfileread('Data\Shaders\Gaussin\g.vs');
+
 	glShaderSource(VertexShaderObject, 1, @vs2, NIL);
 	glShaderSource(FragmentShaderObject, 1, @fs2, NIL);
+
 	glCompileShader(VertexShaderObject);
 	glCompileShader(FragmentShaderObject);
+
 	glAttachShader(ProgramObject, VertexShaderObject);
 	glAttachShader(ProgramObject, FragmentShaderObject);
+
 	glLinkProgram(ProgramObject);
 	//////////////////////////////////////////////////////////////////////////////////
 	glUseProgram(ProgramObject);
