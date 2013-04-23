@@ -5,8 +5,9 @@ interface
 uses windows, commdlg, arcread, arctypes, regexpr;
 
 function MySaveFileDialog():FileRecord;
-procedure FindExtention(var s:string);
+function FindExtention(var s:string): string;
 procedure RemoveInvalid(what:string; var where: string);
+function FindExtention2(s:string): string;
 
 implementation
 procedure RemoveInvalid(what:string; var where: string);
@@ -17,9 +18,9 @@ begin
   while pos(what, tstr)>0 do
     tstr:=copy(tstr,1,pos(what,tstr)-1) + copy(tstr,pos(what,tstr)+length(tstr),length(tstr));
   where:=tstr;
-end; 
+end;
 
-procedure FindExtention(var s:string);
+function FindExtention(var s:string): string;
 var r: TRegExpr; result1 : string;
 begin
 	r := TRegExpr.Create;
@@ -27,9 +28,29 @@ begin
 	r.Expression := '(\.\.*.*)';
 	if r.Exec(1) then begin
 		result1:=r.Match[1];
-		if result1 <> '' then RemoveInvalid(result1, s);
-		//s:=result1;
+		if result1 <> '' then begin
+            RemoveInvalid(result1, s);
+            FindExtention:= result1;
+        end else FindExtention:= '';
 	end;
+
+    writeln(result1);
+end;
+
+function FindExtention2(s:string): string;
+var r: TRegExpr; result1 : string;
+begin
+    r := TRegExpr.Create;
+    r.InputString := s;
+    r.Expression := '(\.\.*.*)';
+    if r.Exec(1) then begin
+        result1:=r.Match[1];
+        if result1 <> '' then begin
+            FindExtention2:= result1;
+        end else FindExtention2:= '';
+    end;
+
+    writeln(result1);
 end;
 
 function MySaveFileDialog():FileRecord;

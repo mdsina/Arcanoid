@@ -37,6 +37,8 @@ var
   Fs			:	TSearchRec;
   filek			: 	TSearchRec;
   TFile			:	Text;
+  FileMask	: string ;
+
   i,l,lp		:	integer;
   ftime, ttime  : 	SYSTEMTIME;
 
@@ -235,7 +237,7 @@ begin
 			k_l:=k_l+1;
 			
 			for pi:=1 to k_l do FindNext(Fs);
-			k_name:=Fs.Name;	
+			k_name:=GetCurrentDir()+'\Data\Levels\'+Fs.Name;	
 			
 			Nulling;
 			win1:=false; fail1:=false;
@@ -272,7 +274,7 @@ begin
 			k_l:=k_l+1;
 			
 			for pi:=1 to k_l do FindNext(Fs);
-			k_name:=Fs.Name;
+			k_name:=GetCurrentDir()+'\Data\Levels\'+Fs.Name;
 			Nulling;			
 			win1:=false; fail1:=false;
 			FileResult:=true; fail1:=false;
@@ -344,8 +346,8 @@ begin
 				bricks[i].tBool:=false;
 			end;
 			
-			FindFirst('*.txt',faAnyFile,Fs);
-			k_name:=Fs.Name;
+			FindFirst(FileMask,faAnyFile,Fs);
+			k_name:=GetCurrentDir()+'\Data\Levels\'+Fs.Name;
 			bricks_count:=0;
 			mainmenu:=true;
 		end;
@@ -671,7 +673,7 @@ begin
   glGenTextures(1,@TextureID);
   glBindTexture(GL_TEXTURE_2D,TextureID);
   glPixelStorei(GL_UNPACK_ALIGNMENT,4);
-glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
+  glPixelStorei(GL_UNPACK_ROW_LENGTH,0);
   glPixelStorei(GL_UNPACK_SKIP_ROWS,0);
   glPixelStorei(GL_UNPACK_SKIP_PIXELS,0);
   glTexParameteri(GL_TEXTURE_2D, GL_TEXTURE_MIN_FILTER, GL_LINEAR);
@@ -1366,10 +1368,10 @@ procedure renderscene;
 var pFileRecord:FileRecord; F:Text; filebool: FileRecord; myfilebool:boolean; Fb: file of Brick;
 begin
 		{$ifdef debug}
-			Writeln(date);
+			//Writeln(date);
 		{$endif}
 		// glCopyTexImage2D(GL_TEXTURE_2D, 0, GL_RGB4, 0, 0, 1024, 768, 0);
-		Writeln((mouse_x/width):4, (mouse_y/height):4);
+		//Writeln((mouse_x/width):4, (mouse_y/height):4);
 		QueryPerformanceCounter(perf_now);
 		frame_time:=(perf_now/perf_freq-perf_last/perf_freq);
 		perf_last:=perf_now;
@@ -1391,36 +1393,56 @@ begin
 			if FileResult=true then
 			begin
 				bricks_count:=0;
-				Assign(TFile,  k_name);
-				Reset(TFile);
-				for pi:=1 to 256 do	begin
-						Readln(TFile, bricks[pi].lives,
-										bricks[pi].box.x,
-										bricks[pi].box.y,
-										bricks[pi].box.width,
-										bricks[pi].box.height,
-										bricks[pi].typei,
-										bricks[pi].tType);
-											
-						if bricks[pi].lives>0 then bricks_count:=bricks_count+1;
-							
-						pBricks[pi].box.x:=bricks[pi].box.x*width;
-						pBricks[pi].box.y:=bricks[pi].box.y*height;
 
+				if FindExtention2(k_name) = '.txt' then begin
+					Assign(TFile,  k_name);
+					Reset(TFile);
+					writeln(k_name);
+					for pi:=1 to 256 do	begin
+							Readln(TFile, bricks[pi].lives,
+											bricks[pi].box.x,
+											bricks[pi].box.y,
+											bricks[pi].box.width,
+											bricks[pi].box.height,
+											bricks[pi].typei,
+											bricks[pi].tType);
+												
+							if bricks[pi].lives>0 then bricks_count:=bricks_count+1;
+								
+							pBricks[pi].box.x:=bricks[pi].box.x*width;
+							pBricks[pi].box.y:=bricks[pi].box.y*height;
+
+					end;
+					Close(TFile);
 				end;
-				Close(TFile);
+				if FindExtention2(k_name) = '.lvl' then begin
+					Assign(Fb,  k_name);
+					Reset(Fb);
+					writeln(k_name);
+					for pi:=1 to 256 do	begin
+							Read(Fb, bricks[pi]);
+												
+							if bricks[pi].lives>0 then bricks_count:=bricks_count+1;
+								
+							pBricks[pi].box.x:=bricks[pi].box.x*width;
+							pBricks[pi].box.y:=bricks[pi].box.y*height;
+
+					end;
+					Close(Fb);
+				end;
+				
 				FileResult:=false;
 			end;
 				
 			if FileResult=false	then ogl_draw;
 				
 			{$ifdef debug}
-				Writeln(bricks[1].box.x);
+				//Writeln(bricks[1].box.x);
 			{$endif}
 			fps:=1/frame_time;
 				
 			{$ifdef debug}
-				Writeln(frame_time:5:5);
+				//Writeln(frame_time:5:5);
 			{$endif}
 				
 			Sleep(10);
@@ -1462,7 +1484,7 @@ begin
 						Assign(Fb, filebool.filename_with_path);
 						Rewrite(Fb);
 						for i:=1 to 256 do
-                            Write(Fb,  bricks[i]);
+                Write(Fb,  bricks[i]);
 
 						Close(Fb);
 					end else begin
@@ -1615,8 +1637,9 @@ begin
 	MIX_VOLUMEMUSIC(100);
 	MIX_PLAYMUSIC(music,1);
 	
-	FindFirst('*.txt',faAnyFile,Fs);
-	k_name:=Fs.Name;
+	FileMask:=GetCurrentDir()+'\Data\Levels\level*.*';
+	FindFirst(FileMask,faAnyFile,Fs);
+	k_name:=GetCurrentDir()+'\Data\Levels\'+Fs.Name;
 	
 	if MessageBox(0,'Fullscreen Mode?', 'Question!',MB_YESNO OR MB_ICONQUESTION) = IDNO
 		then fullscreen := false
@@ -1695,7 +1718,7 @@ glUseProgram(ProgramObject);
 		//glBindFramebuffer(GL_FRAMEBUFFER, 0);
 		//glClear(GL_COLOR_BUFFER_BIT or GL_DEPTH_BUFFER_BIT);
 		
-		
+		writeln(k_name);
 		
 		//glBindVertexArray(fsqVAO);
 		//glDrawArrays(GL_TRIANGLES, 0, 6);
