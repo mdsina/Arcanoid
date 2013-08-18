@@ -1,0 +1,1 @@
+C:\FPC\2.6.2\bin\i386-win32\ppc386.exe -Fcutf8 C:\Users\mds\Desktop\arcanoid2\arcanoid.pas
