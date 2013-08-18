@@ -34,11 +34,7 @@ var
   WndRMouseUp	: 	boolean;
 
   msg 			: 	TMSG;		
-  hWindow 		: 	HWnd;	
-  dcWindow 		: 	hDc;	
-  rcWindow 		: 	HGLRC;	
-  windowRect 	: 	RECT;
-  DC, RC		:	HDC;
+  tProc     :   ArcBoolFuncType;
 
   perf_now, perf_last, perf_freq	:	int64;
   frame_time,ideal_time				:	real;

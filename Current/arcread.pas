@@ -3,18 +3,18 @@ unit arcread;
 interface
 
 uses wincrt;
-function textfileread(fn: pchar): pchar;
+function textfileread(fn: string): pchar;
 procedure ZMem (var obj; sz: dword);
 
 implementation
-function textfileread(fn: pchar): pchar;
+function textfileread(fn: string): pchar;
 var
   f: file;
   r, rd: int64;
   content: pchar;
 begin
   textfileread := nil;
-  if fn = nil then exit;
+  if fn = '' then exit;
   content := nil;
   assign(f, fn); reset(f, 1);
   r := filesize(f);

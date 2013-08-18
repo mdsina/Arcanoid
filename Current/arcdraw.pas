@@ -2,7 +2,7 @@ unit arcdraw;
 interface
 
 {$mode objfpc}
-uses gl, glu, arctypes, Classes;
+uses dglOpenGL, arctypes, arcread, Classes;
 procedure draw_quad(_x, _y, _width, _height :real);
 procedure draw_quad_p(_x, _y, _width, _height :real; width, height: integer);
 procedure draw_quad(r: Rectangle);
@@ -15,10 +15,12 @@ procedure draw_quad_with_shift(_x, _y, _width, _height, shift :real; Fframes:int
 procedure draw_quad_with_shift_p(r: Rectangle; width, height: integer; shift :real; Fframes:integer);
 function GL_Y_FIX ( f : integer ): real;
 function GL_Y_FIX ( f : real ): real;
+procedure InitOpenGLParams( Twidth, Theight : word);
+function LoadShader(fname:pchar): GLhandle;
 
 type PAnimation = class
 protected
-  FPicture:GlUint;
+  FPicture:pgluint;
   FFrameTime:integer;
   FCurrentTime:integer;
   FStoped:boolean;
@@ -27,7 +29,7 @@ protected
 public
   Constructor Create(FrameTime:integer; rand: integer);
 
-  Procedure   AddFrame(Picture:glUint; fCount, width, height: integer);
+  Procedure   AddFrame( var Picture:glUint; fCount, width, height: integer);
   Procedure   Start();
   Procedure   Stop();
   Procedure   Update(dt:integer);
@@ -36,6 +38,54 @@ public
 end;
 
 implementation
+
+function LoadShader(fname:pchar): GLhandle;
+var tempObject: GLhandle;
+  VertexShaderObject   : GLhandle;
+  FragmentShaderObject : GLhandle;
+  fs2, vs2: pchar;
+  rf2: string;
+begin
+  rf2 := 'Data\Shaders\'+fname+'\g.fs';
+
+  tempObject        := glCreateProgram();
+  VertexShaderObject   := glCreateShader(GL_VERTEX_SHADER);
+  FragmentShaderObject := glCreateShader(GL_FRAGMENT_SHADER); 
+
+  fs2:=textfileread(rf2);
+  vs2:=textfileread(rf2);
+
+  glShaderSource(VertexShaderObject, 1, @vs2, NIL);
+  glShaderSource(FragmentShaderObject, 1, @fs2, NIL);
+
+  glCompileShader(VertexShaderObject);
+  glCompileShader(FragmentShaderObject);
+
+  glAttachShader(tempObject, VertexShaderObject);
+  glAttachShader(tempObject, FragmentShaderObject);
+
+  glLinkProgram(tempObject);
+  LoadShader := tempObject;
+end;
+
+procedure InitOpenGLParams( Twidth, Theight : word);
+begin
+  glClearColor( 0.0, 0.0, 0.0, 0.0 );
+  glViewport( 0, 0, Twidth, Theight );
+
+  glmatrixmode(GL_PROJECTION);
+  glloadidentity();
+  glortho(0, Twidth, Theight, 0, 0, 1);
+  glmatrixmode(GL_MODELVIEW);
+  glloadidentity();
+  gltranslatef(0.375, 0.375, 0);
+
+  glDisable(GL_DEPTH_TEST);
+  glEnable(GL_CULL_FACE);
+  glCullFace(GL_BACK);
+  glFrontFace(GL_CCW);
+  glShadeModel(GL_SMOOTH);
+end;
 
 Constructor PAnimation.Create(FrameTime:integer; rand: integer);
 begin
@@ -47,16 +97,16 @@ end;
 function GL_Y_FIX ( f : integer ): real;
 begin
     GL_Y_FIX := 1 - f;
-end;  
+end;
 
 function GL_Y_FIX ( f : real ): real;
 begin
     GL_Y_FIX := 1 - f;
-end;  
+end;
 
-Procedure   PAnimation.AddFrame(Picture:glUint; fCount, width, height: integer);
+Procedure   PAnimation.AddFrame( var Picture:glUint; fCount, width, height: integer);
 begin
-  FPicture:=Picture;
+  FPicture:=@Picture;
   FFrames := fCount;
   _r.width  := width; _r.height := height;
 end;
@@ -88,7 +138,7 @@ begin
   Frame:=FCurrentTime div FFrameTime;
   shift:= (((Frame * (_r.width/FFrames)) * 100 ) / _r.width) / 100;
 
-  glBindTexture(GL_TEXTURE_2D, FPicture);
+  glBindTexture(GL_TEXTURE_2D, FPicture^);
   draw_quad_with_shift(x,y, _r.width/FFrames, _r.height, shift, FFrames);
 end;
 
@@ -99,7 +149,7 @@ begin
   Frame:=FCurrentTime div FFrameTime;
   shift:= (((Frame * (_r.width/FFrames)) * 100 ) / _r.width) / 100;
 
-  glBindTexture(GL_TEXTURE_2D, FPicture);
+  glBindTexture(GL_TEXTURE_2D, FPicture^);
   draw_quad_with_shift_p(r, width, height, shift, FFrames);
 end;
 

@@ -67,16 +67,16 @@ interface
   {$WARN UNSAFE_TYPE OFF} // Suppress .Net warnings
   {$WARN UNSAFE_CODE OFF} // Suppress .Net warnings
 {$ENDIF}
-{$IFDEF FPC}
+
  {$MODE DELPHI} // Delphi-compatible mode in FreePascal
-{$ENDIF}
+
 
 // ======== Define options for TRegExpr engine
 {.$DEFINE UniCode} // Unicode support
 {$DEFINE RegExpPCodeDump} // p-code dumping (see Dump method)
-{$IFNDEF FPC} // the option is not supported in FreePascal
+
  {$DEFINE reRealExceptionAddr} // exceptions will point to appropriate source line, not to Error procedure
-{$ENDIF}
+
 {$DEFINE ComplexBraces} // support braces in complex cases
 {$IFNDEF UniCode} // the option applicable only for non-UniCode mode
  {$DEFINE UseSetOfChar} // Significant optimization by using set of char
@@ -94,14 +94,14 @@ interface
 // Asserts used to catch 'strange bugs' in TRegExpr implementation (when something goes
 // completely wrong). You can swith asserts on/off with help of {$C+}/{$C-} compiler options.
 {$IFDEF D3} {$DEFINE UseAsserts} {$ENDIF}
-{$IFDEF FPC} {$DEFINE UseAsserts} {$ENDIF}
+ {$DEFINE UseAsserts} 
 
 // Define 'use subroutine parameters default values' option (do not edit this definition).
 {$IFDEF D4} {$DEFINE DefParam} {$ENDIF}
 
 // Define 'OverMeth' options, to use method overloading (do not edit this definitions).
 {$IFDEF D5} {$DEFINE OverMeth} {$ENDIF}
-{$IFDEF FPC} {$DEFINE OverMeth} {$ENDIF}
+ {$DEFINE OverMeth} 
 
 uses
  Classes,  // TStrings in Split method
@@ -426,9 +426,9 @@ type
     // see description in the help. Initialized from RegExprModifierX
 
     function Exec (const AInputString : RegExprString) : boolean; {$IFDEF OverMeth} overload;
-    {$IFNDEF FPC} // I do not know why FreePascal cannot overload methods with empty param list
+    
     function Exec : boolean; overload; //###0.949
-    {$ENDIF}
+    
     function Exec (AOffset: integer) : boolean; overload; //###0.949
     {$ENDIF}
     // match a programm against a string AInputString
@@ -583,7 +583,7 @@ type
   end;
 
 const
-  RegExprInvertCaseFunction : TRegExprInvertCaseFunction = {$IFDEF FPC} nil {$ELSE} TRegExpr.InvertCaseFunction{$ENDIF};
+  RegExprInvertCaseFunction : TRegExprInvertCaseFunction = nil ;
   // defaul for InvertCase property
 
 function ExecRegExpr (const ARegExpr, AInputStr : RegExprString) : boolean;
@@ -1178,9 +1178,9 @@ class function TRegExpr.InvertCaseFunction (const Ch : REChar) : REChar;
   else
   {$IFEND}
    begin
-    Result := {$IFDEF FPC}AnsiUpperCase (Ch) [1]{$ELSE} REChar (CharUpper (PChar (Ch))){$ENDIF};
+    Result := AnsiUpperCase (Ch) [1];
     if Result = Ch
-     then Result := {$IFDEF FPC}AnsiLowerCase (Ch) [1]{$ELSE} REChar (CharLower (PChar (Ch))){$ENDIF};
+     then Result := AnsiLowerCase (Ch) [1];
    end;
  end; { of function TRegExpr.InvertCaseFunction
 --------------------------------------------------------------}
@@ -3372,13 +3372,13 @@ function TRegExpr.Exec (const AInputString : RegExprString) : boolean;
 --------------------------------------------------------------}
 
 {$IFDEF OverMeth}
-{$IFNDEF FPC}
+
 function TRegExpr.Exec : boolean;
  begin
   Result := ExecPrim (1);
  end; { of function TRegExpr.Exec
 --------------------------------------------------------------}
-{$ENDIF}
+
 function TRegExpr.Exec (AOffset: integer) : boolean;
  begin
   Result := ExecPrim (AOffset);
@@ -4040,10 +4040,8 @@ procedure TRegExpr.Error (AErrorID : integer);
 // be carefull - placed here code will be always compiled with
 // compiler optimization flag
 
-{$IFDEF FPC}
 initialization
  RegExprInvertCaseFunction := TRegExpr.InvertCaseFunction;
 
-{$ENDIF}
 end.
 

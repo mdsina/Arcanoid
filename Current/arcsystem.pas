@@ -9,6 +9,7 @@ function FindExtention(var s:string): string;
 procedure RemoveInvalid(what:string; var where: string);
 function FindExtention2(s:string): string;
 procedure qSortKernings(var ar: array of BMKerningPairs; low, high: longint);
+function GetFilenameFromPath(s:string): string;
 
 implementation
 
@@ -64,6 +65,23 @@ begin
             FindExtention:= result1;
         end else FindExtention:= '';
 	end;
+
+    writeln(result1);
+end;
+
+function GetFilenameFromPath(s:string): string;
+var r: TRegExpr; result1 : string;
+begin
+  r := TRegExpr.Create;
+  r.InputString := s;
+  r.Expression := '([^/\\]*$)';
+  if r.Exec then begin
+    result1:=r.Match[1];
+    if result1 <> '' then begin
+            RemoveInvalid(FindExtention2(result1), result1);
+            GetFilenameFromPath:= result1;
+        end else GetFilenameFromPath:= '';
+  end;
 
     writeln(result1);
 end;

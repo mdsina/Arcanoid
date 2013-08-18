@@ -4,16 +4,96 @@ interface
 {$MODE DELPHI}
 
 uses
-  Windows, dglOpenGL, SysUtils, arcconst;
+  Windows, dglOpenGL, SysUtils, arcconst, arctypes, arcsystem;
 
-function LoadTextureTGA(Filename: pansichar; var Texture: GLuint): Boolean;
-function LoadBmp(path : pansichar) : uint32;
-function ilLoadFile(filetype: integer; Filename: pansichar; var Texture : GLuint): GLuint;
+function LoadTextureTGA(Filename: string; var Texture: GLuint): Boolean;
+function LoadBmp(path : string) : uint32;
+function ilLoadFile(filetype: integer; Filename: string; var Texture : GLuint): GLuint; overload;
+function ilLoadFile(filetype: integer; Filename: string): GLuint; overload;
 procedure FreeFBO(var TextureID: gluint; var fboId: gluint);
 procedure InitFBO( Width:integer; Height: integer; var fboId: gluint; var TextureID: gluint);
 function createTextureRGBA8( Width:integer; Height: integer): GLUInt;
+function SuperLoadMethod( filename:string ): glUINT;
+
+type TTextureManager = class
+protected
+  TTextures : DynArrayTextureType;
+public
+  Constructor Create();
+  Destructor Destroy();
+
+  Procedure   AddTexture(  _TexturePath : String; _TextureName : WideString = 'defaut' );
+  Procedure   DeleteTexture( _TextureName : WideString );
+  Function    GetTexture( _TextureName : WideString ) : GLUInt;
+  property    GetAllTextures : DynArrayTextureType read TTextures;
+end;
 
 implementation
+
+function SuperLoadMethod( filename:string ): gluint;
+begin
+  if (LowerCase(FindExtention2(filename)) = '.tga') then
+    SuperLoadMethod := ilLoadFile( TGA_FILE, filename )
+  else if (LowerCase(FindExtention2(filename)) = '.bmp') then
+    SuperLoadMethod := ilLoadFile( BMP_FILE, filename );
+end;
+
+Constructor TTextureManager.Create();
+begin
+  SetLength(TTextures,1);
+  TTextures[0].TextureName := 'default';
+  LoadTextureTGA( 'Data\Images\default.tga', TTextures[0].Texture );
+end;
+
+Destructor TTextureManager.Destroy();
+begin
+  TTextures := nil;
+end;
+
+procedure TTextureManager.AddTexture( _TexturePath : String; _TextureName : WideString = 'defaut');
+var i: word;
+begin
+  for i := 0 to High(TTextures) do begin
+    if (TTextures[i].TextureName = _TextureName) then begin
+      MessageBox(0,'Texture with this name is already exist: ', 'ERROR', MB_OK);
+      exit;
+    end;
+  end;
+  SetLength( TTextures, Length(TTextures) + 1 );
+  TTextures[ High(TTextures) ].Texture := SuperLoadMethod( _TexturePath );
+
+  if (_TextureName = 'defaut') then begin
+    TTextures[ High(TTextures) ].TextureName := GetFilenameFromPath( _TexturePath );
+  end else
+    TTextures[ High(TTextures) ].TextureName := _TextureName;
+end;
+
+function TTextureManager.GetTexture( _TextureName : WideString ) : GLUInt;
+var i: word;
+begin
+  for i := 0 to High( TTextures ) do begin
+    if ( TTextures[i].TextureName = _TextureName ) then begin
+      GetTexture := TTextures[i].Texture;
+      exit;
+    end;
+  end;
+end;
+
+procedure TTextureManager.DeleteTexture( _TextureName : WideString );
+var i, j: word;
+begin
+  for i := 0 to High(TTextures) do begin
+    if ( TTextures[i].TextureName = _TextureName ) then begin
+      if ( i <> High(TTextures) ) then begin
+        for j := i to High(TTextures)-1 do begin
+          TTextures[j]:=TTextures[j+1];
+        end;
+      end;
+      SetLength(TTextures, Length(TTextures)-1 );
+      Exit;
+    end;
+  end;
+end;
 
 function createTextureRGBA8( Width:integer; Height: integer): GLUInt;
 var id_texture: GLUInt;
@@ -89,7 +169,7 @@ asm
   pop ebx
 end;
 
-function LoadTextureTGA(Filename: pansichar; var Texture : GLuint): Boolean;
+function LoadTextureTGA(Filename: string; var Texture : GLuint): Boolean;
 var
   TGAHeader : packed record
     FileType     : Byte;
@@ -260,7 +340,7 @@ begin
   end;
 end;
 
-function ilLoadFile(filetype: integer; Filename: pansichar; var Texture : GLuint): GLuint;
+function ilLoadFile(filetype: integer; Filename: string; var Texture : GLuint): GLuint; overload;
 begin
   case filetype of
     TGA_FILE: LoadTextureTGA(Filename, Texture);
@@ -270,7 +350,18 @@ begin
   ilLoadFile := Texture;
 end;
 
-function LoadBmp(path : pansichar) : uint32;
+function ilLoadFile(filetype: integer; Filename: string): GLuint; overload;
+var tempTexture: GLUInt;
+begin
+  case filetype of
+    TGA_FILE: LoadTextureTGA(Filename, tempTexture);
+    BMP_FILE: tempTexture:=LoadBMP(filename);
+  end;
+
+  ilLoadFile := tempTexture;
+end;
+
+function LoadBmp(path : string) : uint32;
 var
   i:longint;
   gBitmap:hBitmap;
@@ -279,7 +370,7 @@ var
   format: GLuint;
 begin
   writeln(path);
-  gbitmap:=LoadImage(GetModuleHandle(NIL), path, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION or LR_LOADFROMFILE);
+  gbitmap:=LoadImage(GetModuleHandle(NIL), @path, IMAGE_BITMAP, 0, 0, LR_CREATEDIBSECTION or LR_LOADFROMFILE);
   GetObject(gbitmap, sizeof(sbitmap), @sbitmap);
   glEnable(GL_TEXTURE_2D);
   glGenTextures(1,@TextureID);

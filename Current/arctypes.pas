@@ -2,12 +2,20 @@ unit arctypes;
 
 interface
 
-uses gl, glu;
+uses gl, glu, windows;
 
 Type
-  ArcFuncType = function : string;
+  ArcStringFuncType = function : string;
+  ArcBoolFuncType = function (Window: HWnd; AMessage, WParam, LParam: Longint): Longint; stdcall;
 
   DynArrayType = array of word;
+
+  ArcTextureType = record
+    Texture : GLUInt;
+    TextureName : WideString;
+  end;
+
+  DynArrayTextureType = array of ArcTextureType;
 
   BMGlyph = record
     id, x, y, width, height,  xadvance : word;

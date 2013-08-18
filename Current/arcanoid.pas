@@ -7,7 +7,7 @@
 
 {$COPERATORS ON}
 
-uses  windows, dglopengl, sysutils, shlobj, sdl, sdl_mixer, png, arcimage, arcconst, arctextures,
+uses  windows, dglopengl, sysutils, shlobj, sdl, sdl_mixer, png, arcimage, arcconst, arctextures, arcwin,
   libcurl, crt, arctypes, arcread, arcphys, arcdraw, commdlg, arcvariables, arcsystem, arcgui, LConvEncoding ;
 
 Procedure TPrintText(text2:integer; t1, t2,TLength: real; twidth,theight:real);
@@ -68,36 +68,36 @@ begin
 	if mainmenu = true
 	then begin
 
-		if (mouse_x>(x04*width)) and (mouse_x<(x04*width+_width))
-		and (mouse_y<(y04*height+_height)) and (mouse_y>(y04*height))
+		if (mouse_x>(x04*w_width)) and (mouse_x<(x04*w_width+_width))
+		and (mouse_y<(y04*w_height+_height)) and (mouse_y>(y04*w_height))
 		then begin
 			mainmenu:=false;
 			options:=true;
 		end;
 		
-		if (mouse_x>x01*width) and (mouse_x<(x01*width+_width))
-		and (mouse_y<(y01*height+_height)) and (mouse_y>y01*height)
+		if (mouse_x>x01*w_width) and (mouse_x<(x01*w_width+_width))
+		and (mouse_y<(y01*w_height+_height)) and (mouse_y>y01*w_height)
 		then begin
 			mainmenu:=false;
 			game:=true;
 		end	else game:=false;
 	
-		if (mouse_x>x02*width) and (mouse_x<(x02*width+_width))
-		and (mouse_y<(y02*height+_height)) and (mouse_y>y02*height)
+		if (mouse_x>x02*w_width) and (mouse_x<(x02*w_width+_width))
+		and (mouse_y<(y02*w_height+_height)) and (mouse_y>y02*w_height)
 		then begin
 			mainmenu:=false;
 			manual:=true;
 		end;
 		
-		if (mouse_x>x05*width) and (mouse_x<(x05*width+_width))
-		and (mouse_y<(y05*height+_height)) and (mouse_y>y05*height)
+		if (mouse_x>x05*w_width) and (mouse_x<(x05*w_width+_width))
+		and (mouse_y<(y05*w_height+_height)) and (mouse_y>y05*w_height)
 		then begin
-			SendMessage(hWindow,wm_destroy,0,0);
+		    KilloglWindow;
 			Exit;
 		end;
 				
-		if (mouse_x>x03*width) and (mouse_x<(x03*width+_width))
-		and (mouse_y<(y03*height+_height)) and (mouse_y>y03*height)
+		if (mouse_x>x03*w_width) and (mouse_x<(x03*w_width+_width))
+		and (mouse_y<(y03*w_height+_height)) and (mouse_y>y03*w_height)
 		then begin
 			mainmenu:=false;
 			editor:=true;
@@ -116,8 +116,8 @@ begin
 			if hy<0 then hy:=hy+3
 					else hy:=hy-3;
 				
-			if (mouse_x/width>0.036) and (mouse_x/width<0.036+70/width)
-			and (mouse_y<0.22*height+69) and (mouse_y/height>0.22)
+			if (mouse_x/w_width>0.036) and (mouse_x/w_width<0.036+70/w_width)
+			and (mouse_y<0.22*w_height+69) and (mouse_y/w_height>0.22)
 			then begin
 				bricks_count:=0;			
 				Nulling;				
@@ -129,8 +129,8 @@ begin
 				mainmenu:=true;
 		end;
 							
-		if (mouse_x/width>0.036) and (mouse_x/width<0.036+70/width)
-		and (mouse_y<0.43*height+69) and (mouse_y/height>0.43)
+		if (mouse_x/w_width>0.036) and (mouse_x/w_width<0.036+70/w_width)
+		and (mouse_y<0.43*w_height+69) and (mouse_y/w_height>0.43)
 		then begin
 			if fail1=true then counter:=3;
 			FileResult:=true;
@@ -148,8 +148,8 @@ begin
 			if hx<0 then hx:=abs(hx);
 		end;
 							
-		if (mouse_x/width>0.036) and (mouse_x/width<0.036+70/width)
-		and (mouse_y<0.64*height+69) and (mouse_y/height>0.64)
+		if (mouse_x/w_width>0.036) and (mouse_x/w_width<0.036+70/w_width)
+		and (mouse_y<0.64*w_height+69) and (mouse_y/w_height>0.64)
 		then begin
 			bricks_count:=0;
 			Nulling;
@@ -165,8 +165,8 @@ begin
 		
 	if game=true then
 	begin
-		if (mouse_x>(width/2-70/2)) and (mouse_x<(width/2+70/2))
-		and (mouse_y>(height/2-70/2)) and (mouse_y<(height/2+70/2))
+		if (mouse_x>(w_width/2-70/2)) and (mouse_x<(w_width/2+70/2))
+		and (mouse_y>(w_height/2-70/2)) and (mouse_y<(w_height/2+70/2))
 		and ((win1=true) or (fail1=true))
 		then begin
 			if fail1=true then counter:=3;
@@ -184,8 +184,8 @@ begin
 			if hx<0 then hx:=abs(hx);
 		end;
 					
-		if (mouse_x>(width/3-70/2)) and (mouse_x<(width/3+70/2))
-		and (mouse_y>(height/2-70/2)) and (mouse_y<(height/2+70/2))
+		if (mouse_x>(w_width/3-70/2)) and (mouse_x<(w_width/3+70/2))
+		and (mouse_y>(w_height/2-70/2)) and (mouse_y<(w_height/2+70/2))
 		and ((win1=true) or (fail1=true))
 		then begin
 			if fail1=true then counter:=3;
@@ -227,6 +227,7 @@ procedure OnEditor(x,y: integer);
 begin
 	if (editor = true) then
 	begin
+		bricks_count := 0;
 		if (mouse_x>0) and (mouse_x<70)	and (mouse_y<70) and (mouse_y>0)
 		then begin
 			editor:=false;
@@ -252,17 +253,17 @@ begin
 			mainmenu:=true;
 		end;
 					
-		if ((x>=0.037*width) and (y>=0.042*height) and ((x+54)<=0.72*width)	and ((y+30)<=0.95*height))
+		if ((x>=0.037*w_width) and (y>=0.042*w_height) and ((x+54)<=0.72*width)	and ((y+30)<=0.95*w_height))
 		then begin
 			bricks_count:=bricks_count + 1;
 			bricks[bricks_count].lives:=1;
 			if useSnap=false then
 			begin
-				bricks[bricks_count].box.x:=(mouse_x+bricks[bricks_count].box.width/2)/width;
-				bricks[bricks_count].box.y:=(mouse_y+bricks[bricks_count].box.height/2)/height;
+				bricks[bricks_count].box.x:=(mouse_x+bricks[bricks_count].box.width/2)/w_width;
+				bricks[bricks_count].box.y:=(mouse_y+bricks[bricks_count].box.height/2)/w_height;
 			end	else begin
-				bricks[bricks_count].box.x:=(round((mouse_x+bricks[bricks_count].box.width/2)/snapStepx)*snapStepx)/width;
-				bricks[bricks_count].box.y:=(round((mouse_y+bricks[bricks_count].box.height/2)/snapStepy)*snapStepy)/height;
+				bricks[bricks_count].box.x:=(round((mouse_x+bricks[bricks_count].box.width/2)/snapStepx)*snapStepx)/w_width;
+				bricks[bricks_count].box.y:=(round((mouse_y+bricks[bricks_count].box.height/2)/snapStepy)*snapStepy)/w_height;
 			end;
 								
 			bricks[bricks_count].box.width:=54;
@@ -303,11 +304,6 @@ begin
 	mouse_y:=y;
 end;
 
-procedure ThrowError(pcErrorMessage : pChar);
-begin
-  MessageBox(0, pcErrorMessage, 'Error', MB_OK);
-  Halt(0);
-end;
 
 function GLWndProc(Window: HWnd; AMessage, WParam, LParam: Longint): Longint; stdcall; export;
 begin
@@ -372,152 +368,23 @@ begin
   GLWndProc := DefWindowProc(Window, AMessage, WParam, LParam);
 end;
 
-function WindowRegister: Boolean;
-var
-  WindowClass: WndClass;
-begin
-  WindowClass.Style := cs_hRedraw or cs_vRedraw;
-  WindowClass.lpfnWndProc := WndProc(@GLWndProc);
-  WindowClass.cbClsExtra := 0;
-  WindowClass.cbWndExtra := 0;
-  WindowClass.hInstance := system.MainInstance;
-  WindowClass.hIcon := LoadImage(0, 'ico.ico', IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_LOADFROMFILE);
-  //WindowClass.hIconSm := LoadImage(0, 'ico.ico', IMAGE_ICON, 0, 0, LR_DEFAULTSIZE or LR_LOADFROMFILE);
-  WindowClass.hCursor := LoadCursor(0, idc_Arrow);
-  WindowClass.hbrBackground := GetStockObject(WHITE_BRUSH);
-  WindowClass.lpszMenuName := nil;
-  WindowClass.lpszClassName := 'GLWindow';
-
-  WindowRegister := RegisterClass(WindowClass) <> 0;
-
-  windowRect.top:=0;
-  windowRect.left:=0;
-  windowRect.bottom:=windowRect.top + height;
-  windowRect.right:=windowRect.left + width;
-
-  AdjustWindowRect(@windowRect, WS_CAPTION OR WS_POPUPWINDOW OR WS_VISIBLE OR WS_CLIPSIBLINGS OR WS_CLIPCHILDREN, false);
-end;
-
-function WindowCreate(pcApplicationName : pChar): HWnd;
-var
-  hWindow: HWnd;
-  dmScreenSettings : DEVMODE;	
-begin
-
- if fullscreen = false
-  then hWindow := CreateWindow('GLWindow', pcApplicationName, WS_CAPTION OR WS_POPUPWINDOW OR WS_VISIBLE OR WS_CLIPSIBLINGS OR WS_CLIPCHILDREN,
-			 cw_UseDefault, cw_UseDefault, windowRect.right - windowRect.left, windowRect.bottom - windowRect.top, 0, 0, system.MainInstance, nil)
-  else begin
-      dmScreenSettings.dmSize := sizeof(dmScreenSettings);
-      dmScreenSettings.dmPelsWidth := width;		
-      dmScreenSettings.dmPelsHeight := height;
-      dmScreenSettings.dmBitsPerPel := bits;
-      dmScreenSettings.dmFields := DM_BITSPERPEL OR DM_PELSWIDTH OR DM_PELSHEIGHT;
-
-	 if ChangeDisplaySettings(@dmScreenSettings,CDS_FULLSCREEN) <> DISP_CHANGE_SUCCESSFUL  then  begin
-	      ThrowError('Your video card not supported');
-	      WindowCreate := 0;
-	      Exit;
-	 end;
-
-  	hWindow := CreateWindowEx(WS_EX_APPWINDOW,  'GLWindow',   pcApplicationName,  WS_POPUP OR WS_VISIBLE OR WS_CLIPSIBLINGS OR WS_CLIPCHILDREN,
-  							  0, 0,   width,   height,   0, 0,   system.MainInstance, nil );
-  	ShowCursor(true);
- end;
-
-  if hWindow <> 0 then begin
-    ShowWindow(hWindow, CmdShow);
-    UpdateWindow(hWindow);
-  end;
-
-  WindowCreate := hWindow;
-end;
-
-function WindowInit(hParent : HWnd): Boolean;
-var
-  FunctionError : integer;
-begin
-  FunctionError := 0;
-  dcWindow := GetDC( hParent );
-  RCWindow:= CreateRenderingContext( DCWindow, [opDoubleBuffered], 32, 24, 0, 0, 0, 0);
-  ActivateRenderingContext(DCWindow , RCWindow);
-
-  if FunctionError = 0 then WindowInit := true
-					   else WindowInit := false;
-end;
-
-function CreateOGLWindow(pcApplicationName : pChar; iApplicationWidth, iApplicationHeight, iApplicationBits : longint; bApplicationFullscreen : boolean):Boolean;
-begin
- width := iApplicationWidth;
- height := iApplicationHeight;
- bits := iApplicationBits;
- fullscreen := bApplicationFullscreen;
-
-  if not WindowRegister then begin
-    ThrowError('Could not register the Application Window!');
-    CreateOGLWindow := false;
-    Exit;
-  end;
-
-  hWindow := WindowCreate(pcApplicationName);
-  if longint(hWindow) = 0 then begin
-    ThrowError('Could not create Application Window!');
-    CreateOGLWindow := false;
-    Exit;
-  end;
-
- if not WindowInit(hWindow) then begin
-    ThrowError('Could not initialise Application Window!');
-    CreateOGLWindow := false;
-    Exit;
-  end;
-
- CreateOGLWindow := true;
-end;
-
-procedure KillOGLWindow();
-begin
-  wglMakeCurrent( dcWindow, 0 );
-  wglDeleteContext( rcWindow );
-  ReleaseDC( hWindow, dcWindow );
-  DestroyWindow( hWindow );
-end;
-
-procedure OpenGL_Init();
-begin
-  glClearColor( 0.0, 0.0, 0.0, 0.0 );
-  glViewport( 0, 0, width, height );
-
-  glmatrixmode(GL_PROJECTION);
-  glloadidentity();
-  glortho(0, width, height, 0, 0, 1);
-  glmatrixmode(GL_MODELVIEW);
-  glloadidentity();
-  gltranslatef(0.375, 0.375, 0);
-
-  glDisable(GL_DEPTH_TEST);
-  glEnable(GL_CULL_FACE);
-  glCullFace(GL_BACK);
-  glFrontFace(GL_CCW);
-  glShadeModel(GL_SMOOTH);
-end;
 
 procedure handle_input;
 var
 	dir_x, dir_y:real;
 	i:integer;
 begin
-	if Getfocus()=hWindow then
+	if true then
 	begin
 
 		poll.x:=mouse_x-poll.width/2;
-		if poll.x<=0.037*width	then poll.x:=0.037*width;
-		if (poll.x+poll.width)>=0.72*width	then poll.x:=0.72*width-poll.width;
+		if poll.x<=0.037*w_width	then poll.x:=0.037*w_width;
+		if (poll.x+poll.width)>=0.72*w_width	then poll.x:=0.72*w_width-poll.width;
 		
-		if collide_scn_left(player, width) = true then  hx:=-hx;
-		if collide_scn_right(player, width) = true then  hx:=-hx;
-		if collide_scn_up(player, height) = true then  hy:=-hy;
-		if collide_scn_down(player, height) = true then
+		if collide_scn_left(player, w_width) = true then  hx:=-hx;
+		if collide_scn_right(player, w_width) = true then  hx:=-hx;
+		if collide_scn_up(player, w_height) = true then  hy:=-hy;
+		if collide_scn_down(player, w_height) = true then
 		begin
 			counter:=counter-1;
 			spacecon:=false;
@@ -547,18 +414,18 @@ begin
 		for i:=1 to 256 do begin
 			if bricks[i].lives>0 then
 			begin
-				if CollideRectangle_p(player, bricks[i].box, width, height)
+				if CollideRectangle_p(player, bricks[i].box, w_width, w_height)
 				then begin
 					score:=score+10;
 					
-					if CollideTop_p(bricks[i].box, player, player_old_y, height)
+					if CollideTop_p(bricks[i].box, player, player_old_y, w_height)
 					then if collision=true then hy:=-3;
 
-					if  CollideBottom_p(bricks[i].box, player, player_old_y, height)
+					if  CollideBottom_p(bricks[i].box, player, player_old_y, w_height)
 					then if collision=true then hy:=3;
 
-					if CollideLeft_p(bricks[i].box, player, player_old_x, width) or
-					CollideRight_p(bricks[i].box, player, player_old_x, width)
+					if CollideLeft_p(bricks[i].box, player, player_old_x, w_width) or
+					CollideRight_p(bricks[i].box, player, player_old_x, w_width)
 					then if collision=true then hx:=-hx;
 					
 					if (k_bonus[1]=true)
@@ -570,7 +437,7 @@ begin
 				if (bricks[i].lives<=0) and (bricks[i].typei=3) then bricks[i].tBool:=true;
 			end;
 			
-			if (pbricks[i].box.y+pbricks[i].box.height)=height then bricks[i].tBool:=false;
+			if (pbricks[i].box.y+pbricks[i].box.height)=w_height then bricks[i].tBool:=false;
 			if bricks[i].tBool=true	then
 			begin
 				if CollideRectangle(pBricks[i].box,poll) then
@@ -685,16 +552,16 @@ begin
 	begin
 		ShowCursor(true);
 		glBindTexture(GL_TEXTURE_2D, Tex.wf[1]);
-		draw_quad(0,0,width,height);
+		draw_quad(0,0,w_width,w_height);
 
 		glBindTexture(GL_TEXTURE_2D, Tex.Return);
-		draw_quad((width/3 -70/2),(height/2 -70/2),70,70);
+		draw_quad((w_width/3 -70/2),(w_height/2 -70/2),70,70);
 
 		glBindTexture(GL_TEXTURE_2D, Tex.Next);
-		draw_quad((width/2 -70/2),(height/2 -70/2),70,70);
+		draw_quad((w_width/2 -70/2),(w_height/2 -70/2),70,70);
 
 		glBindTexture(GL_TEXTURE_2D, Tex.Home);
-		draw_quad((width/2 -70/2)+(abs(width/2-width/3)),(height/2 -70/2),70,70);
+		draw_quad((w_width/2 -70/2)+(abs(w_width/2-w_width/3)),(w_height/2 -70/2),70,70);
 
 		win1:=true;
 		fail1:=false;
@@ -707,16 +574,16 @@ begin
 	begin
 		ShowCursor(true);
 		glBindTexture(GL_TEXTURE_2D, Tex.wf[2]);
-		draw_quad(0,0,width,height);
+		draw_quad(0,0,w_width,w_height);
 
 		glBindTexture(GL_TEXTURE_2D, Tex.Return);
-		draw_quad((width/3 -70/2),(height/2 -70/2),70,70);
+		draw_quad((w_width/3 -70/2),(w_height/2 -70/2),70,70);
 
 		glBindTexture(GL_TEXTURE_2D, Tex.Next);
-		draw_quad((width/2 -70/2),(height/2 -70/2),70,70);
+		draw_quad((w_width/2 -70/2),(w_height/2 -70/2),70,70);
 
 		glBindTexture(GL_TEXTURE_2D, Tex.Home);
-		draw_quad((width/2 -70/2)+(abs(width/2-width/3)),(height/2 -70/2),70,70);
+		draw_quad((w_width/2 -70/2)+(abs(w_width/2-w_width/3)),(w_height/2 -70/2),70,70);
 		fail1:=true;
 		win1:=false;
 	end;
@@ -737,17 +604,17 @@ begin
 
 	glBindTexture(GL_TEXTURE_2D, Tex.gMenu[3]);
     glBegin( GL_QUADS );
-		glTexCoord2f(_x01, 0.0);   glVertex2f(0, height);
-		glTexCoord2f(_x02, 0.0);   glVertex2f(width, height);
-		glTexCoord2f(_x03, 1.0);   glVertex2f(width, 0);
+		glTexCoord2f(_x01, 0.0);   glVertex2f(0, w_height);
+		glTexCoord2f(_x02, 0.0);   glVertex2f(w_width, w_height);
+		glTexCoord2f(_x03, 1.0);   glVertex2f(w_width, 0);
 		glTexCoord2f(_x04, 1.0);   glVertex2f(0, 0);
 	glEnd();
 	
 	glBindTexture(GL_TEXTURE_2D, Tex.gMenu[1]);
     glBegin( GL_QUADS );
-		glTexCoord2f(_x1, 0.0);   glVertex2f(0, height);
-		glTexCoord2f(_x2, 0.0);   glVertex2f(width, height);
-		glTexCoord2f(_x3, 1.0);   glVertex2f(width, 0);
+		glTexCoord2f(_x1, 0.0);   glVertex2f(0, w_height);
+		glTexCoord2f(_x2, 0.0);   glVertex2f(w_width, w_height);
+		glTexCoord2f(_x3, 1.0);   glVertex2f(w_width, 0);
 		glTexCoord2f(_x4, 1.0);   glVertex2f(0, 0);
 	glEnd();
 	_x1:=_x1+0.001; _x2:=_x2+0.001;
@@ -768,46 +635,46 @@ begin
 	_width:=170;
 	_height:=99;
 	x02:=0.18; y02:=0.2; x05:=0.62; y05:=0.65;
-	x01:=0.5-(_width/2)/width; y01:=0.5-(_height/2)/(width-width div 5);
+	x01:=0.5-(_width/2)/w_width; y01:=0.5-(_height/2)/(w_width-w_width div 5);
 	x03:=0.18; y03:=0.65; x04:=0.62; y04:=0.2;
 	
-	{bkg_scrolling;
+	bkg_scrolling;
 
 	glBindTexture(GL_TEXTURE_2D, Tex.gMenu[2]);
-	draw_quad(0,0,width,height);
+	draw_quad(0,0,w_width,w_height);
 
-	if (mouse_x>x01*width) and (mouse_x<(x01*width+_width))
-	and (mouse_y<(y01*height+_height)) and (mouse_y>y01*height)
+	if (mouse_x>x01*w_width) and (mouse_x<(x01*w_width+_width))
+	and (mouse_y<(y01*w_height+_height)) and (mouse_y>y01*w_height)
 		then glBindTexture(GL_TEXTURE_2D, Tex.MenuItemsi[1])
 		else glBindTexture(GL_TEXTURE_2D, Tex.MenuItemsf[1]);
-	draw_quad_p(x01, y01, _width, _height,width,height);
+	draw_quad_p(x01, y01, _width, _height,w_width,w_height);
 
-	if (mouse_x>(x04*width)) and (mouse_x<(x04*width+_width))
-	and (mouse_y<(y04*height+_height)) and (mouse_y>(y04*height))
+	if (mouse_x>(x04*w_width)) and (mouse_x<(x04*w_width+_width))
+	and (mouse_y<(y04*w_height+_height)) and (mouse_y>(y04*w_height))
 		then glBindTexture(GL_TEXTURE_2D, Tex.MenuItemsi[5])
 		else glBindTexture(GL_TEXTURE_2D, Tex.MenuItemsf[5]);
-	draw_quad_p(x04, y04, _width, _height,width, height);
+	draw_quad_p(x04, y04, _width, _height,w_width, w_height);
 
-	if (mouse_x>x02*width) and (mouse_x<(x02*width+_width))
-	and (mouse_y<(y02*height+_height)) and (mouse_y>y02*height)
+	if (mouse_x>x02*w_width) and (mouse_x<(x02*w_width+_width))
+	and (mouse_y<(y02*w_height+_height)) and (mouse_y>y02*w_height)
 		then glBindTexture(GL_TEXTURE_2D, Tex.MenuItemsi[2])
 		else glBindTexture(GL_TEXTURE_2D, Tex.MenuItemsf[2]);
-	draw_quad_p(x02, y02, _width, _height,width, height);
+	draw_quad_p(x02, y02, _width, _height,w_width, w_height);
 
-	if (mouse_x>x03*width) and (mouse_x<(x03*width+_width))
-	and (mouse_y<(y03*height+_height)) and (mouse_y>y03*height)
+	if (mouse_x>x03*width) and (mouse_x<(x03*w_width+_width))
+	and (mouse_y<(y03*w_height+_height)) and (mouse_y>y03*w_height)
 		then glBindTexture(GL_TEXTURE_2D, Tex.MenuItemsi[3])
 		else glBindTexture(GL_TEXTURE_2D, Tex.MenuItemsf[3]);
-	draw_quad_p(x03, y03, _width, _height,width, height);
+	draw_quad_p(x03, y03, _width, _height,w_width, w_height);
 
-	if (mouse_x>x05*width) and (mouse_x<(x05*width+_width))
-	and (mouse_y<(y05*height+_height)) and (mouse_y>y05*height)
+	if (mouse_x>x05*w_width) and (mouse_x<(x05*w_width+_width))
+	and (mouse_y<(y05*w_height+_height)) and (mouse_y>y05*w_height)
 		then glBindTexture(GL_TEXTURE_2D, Tex.MenuItemsi[4])
 		else glBindTexture(GL_TEXTURE_2D, Tex.MenuItemsf[4]);
-	draw_quad_p(x05, y05, _width, _height,width, height);}
+	draw_quad_p(x05, y05, _width, _height,w_width, w_height);
 
 	//DrawText(baseFont, 'Hello http://www.gamedev.ru/', 28, width div 3, height div 2 + 100, true, true, 500, 600);
-	DrawText(tnrFont, 'Съешь еще этих мягких французских яблок да выпей йаду!'#13'Съешь еще этих мягких французских яблок да выпей йаду!Съешь еще этих мягких французских яблок да выпей йаду!', 40, width div 3, height div 4 -50, true, true, 500, 600);;
+	
 end;
 
 procedure draw_manual;
@@ -821,38 +688,22 @@ begin
 	bkg_scrolling;
 
 	glBindTexture(GL_TEXTURE_2D, Tex.gMenu[2]);
-	draw_quad(0,0,width,height);
+	draw_quad(0,0,w_width,w_height);
 
-	if (mouse_x>0) and (mouse_x<70) and (mouse_y<70) and (mouse_y>0)
-		then glBindTexture(GL_TEXTURE_2D, Tex.back[2])
-		else glBindTexture(GL_TEXTURE_2D, Tex.back[1]);
-	draw_quad(0, 0, 70, 70);
+	DrawText(baseFont, 'In editor:'#10'use LMB+VK_1\2\3 for adding a new block'#10'1 - simple block'#10'2 - wooden block'#10'3 - block with random bonus. Use RMB for deleting blocks'#10, 32, w_width div 4, w_height div 4 -50, true, true, 500, 600);
 
-	if (mouse_x>(mx01-_mwidth/2)) and (mouse_x<mx01+_mwidth/2)
-	and (mouse_y<my01+_mheight/2) and (mouse_y>(my01-_mheight/2))
-		then glBindTexture(GL_TEXTURE_2D, Tex.mHelph[1])
-		else glBindTexture(GL_TEXTURE_2D, Tex.mHelp[1]);
-	draw_quad_c(mx01, my01, _mwidth, _mheight);
+	DrawText(baseFont, #10'for saving level please push CTRL and write a filename '#32'level[NUMBER]'#32' and select type.'#10'Where [NUMBER] number of level;'#10, 32, w_width div 4, w_height div 4 +150, true, true, 500, 600);
 
-	if (mouse_x>(mx02-_mwidth/2)) and (mouse_x<mx02+_mwidth/2)
-	and (mouse_y<my02+_mheight/2) and (mouse_y>(my02-_mheight/2))
-		then glBindTexture(GL_TEXTURE_2D, Tex.mHelph[2])
-		else glBindTexture(GL_TEXTURE_2D, Tex.mHelp[2]);
-	draw_quad_c(mx02, my02, _mwidth, _mheight);
+	DrawText(baseFont, #10'In game:'#10'use mouse for moving the pole. Press SPACE for start the game.', 32, w_width div 4, w_height div 4 + 300, true, true, 500, 600);
 
-	if (mouse_x>(mx03-_mwidth/2)) and (mouse_x<mx03+_mwidth/2)
-	and (mouse_y<my03+_mheight/2) and (mouse_y>(my03-_mheight/2))
-		then glBindTexture(GL_TEXTURE_2D, Tex.mHelph[3])
-		else glBindTexture(GL_TEXTURE_2D, Tex.mHelp[3]);
-	draw_quad_c(mx03, my03, _mwidth, _mheight);
 end;
 
 procedure options_draw;
 begin
 	glClear(GL_COLOR_BUFFER_BIT);
 	glBindTexture(GL_TEXTURE_2D, Tex.mBkg);
-	draw_quad(0,0,width,height);
-	checkbox_draw(width div 2, height div 2, 1);
+	draw_quad(0,0,w_width,w_height);
+	checkbox_draw(w_width div 2, w_height div 2, 1);
 end;
 
 
@@ -864,7 +715,7 @@ begin
 	if game=true then
 	begin
 		glBindTexture(GL_TEXTURE_2D, Tex.tbkg);
-		draw_quad(0,0,width,height);
+		draw_quad(0,0,w_width,w_height);
 		glBindTexture(GL_TEXTURE_2D, Tex.Ball);
 		draw_quad(player.x, player.y, player.width, player.height);
 		glBindTexture(GL_TEXTURE_2D, Tex.Poll);
@@ -887,7 +738,7 @@ begin
 				else if (bricks[i].lives = 1) and  (bricks[i].typei=1)
 					then begin
 						Animations[i].Update(dt);
-						Animations[i].Draw_p(bricks[i].box, width, height);
+						Animations[i].Draw_p(bricks[i].box, w_width, w_height);
 					end	else if bricks[i].lives = 2
 						then  glBindTexture(GL_TEXTURE_2D, Tex.wLive[round(bricks[i].Ttype)]);
 
@@ -899,7 +750,7 @@ begin
 			then if (bricks[i].lives<=0 ) and (bricks[i].typei=3) and (bricks[i].tBool=true)
 			then begin
 				glBindTexture(GL_TEXTURE_2D, Tex.TBonus[round(bricks[i].Bonus)]);
-				draw_quad_p(pBricks[i].box,width, height);
+				draw_quad_p(pBricks[i].box,w_width, w_height);
 				pbricks[i].box.y:=pbricks[i].box.y+1.2;
 			end;
 	end;
@@ -909,10 +760,10 @@ begin
         for i:=1 to 256 do
 			if  (bricks[i].lives>0) and (WndRMouseUp=false)	then
 				if useSnap=true then
-					if (bricks[i].box.x=(round(mouse_x/snapStepx)*snapStepx)/width) and
-					(bricks[i].box.y=(round(mouse_y/snapStepy)*snapStepy)/height)
+					if (bricks[i].box.x=(round(mouse_x/snapStepx)*snapStepx)/w_width) and
+					(bricks[i].box.y=(round(mouse_y/snapStepy)*snapStepy)/w_height)
 						then bricks[i].lives:=0	else
-							if (bricks[i].box.x=mouse_x/width) and	(bricks[i].box.y=mouse_y/height)
+							if (bricks[i].box.x=mouse_x/w_width) and	(bricks[i].box.y=mouse_y/w_height)
 								then bricks[i].lives:=0;
     end;
 
@@ -932,19 +783,19 @@ begin
 			hx:=0;
 			hy:=0;
 			poll.x:=width/2;
-			if width=1024 then tpk:=426
+			if w_width=1024 then tpk:=426
 						  else tpk:=426/1.28;
 			glBindTexture(GL_TEXTURE_2D, Tex.kMenu);
-			draw_quad(0,0,tpk ,height);
+			draw_quad(0,0,tpk ,w_height);
 
 			glBindTexture(GL_TEXTURE_2D, Tex.return);
-			draw_quad_p(0.036, 0.22, 70, 69, width, height);
+			draw_quad_p(0.036, 0.22, 70, 69, w_width, w_height);
 
 			glBindTexture(GL_TEXTURE_2D, Tex.next);
-			draw_quad_p(0.036, 0.43, 70, 69,width, height);
+			draw_quad_p(0.036, 0.43, 70, 69,w_width, w_height);
 
 			glBindTexture(GL_TEXTURE_2D, Tex.home);
-			draw_quad_p(0.036, 0.64, 70, 69,width, height);
+			draw_quad_p(0.036, 0.64, 70, 69,w_width, w_height);
 		end;
 end;
 
@@ -972,12 +823,12 @@ begin
 
   _x01:=0;  _x02:=1;  _x03:=1;  _x04:=0;
   player.width:=20;  player.height:=20;
-  player.x:=(width - player.width) / 2;  player.y:=(height / 2)-player.height+9;
+  player.x:=(w_width - player.width) / 2;  player.y:=(w_height / 2)-player.height+9;
   bk:=true;  bk2:=true;
   player_old_x:=player.x;  player_old_y:=player.y;
   snapStepx:=54;  snapStepy:=30;
   poll.width:=100;  poll.height:=20;
-  poll.x:=(width-poll.width) /2;  poll.y:=((height+poll.height)/2)+(height /3);
+  poll.x:=(w_width-poll.width) /2;  poll.y:=((w_height+poll.height)/2)+(w_height /3);
   for i:=1 to 256 do
 	begin
 		bricks[i].Bonus:=random(7)+1;
@@ -1035,8 +886,8 @@ begin
 								bricks_count:=bricks_count+1;
 							end;
 
-							pBricks[pi].box.x:=bricks[pi].box.x*width;
-							pBricks[pi].box.y:=bricks[pi].box.y*height;
+							pBricks[pi].box.x:=bricks[pi].box.x*w_width;
+							pBricks[pi].box.y:=bricks[pi].box.y*w_height;
 
 					end;
 					Close(TFile);
@@ -1050,8 +901,8 @@ begin
 
 							if bricks[pi].lives>0 then bricks_count:=bricks_count+1;
 
-							pBricks[pi].box.x:=bricks[pi].box.x*width;
-							pBricks[pi].box.y:=bricks[pi].box.y*height;
+							pBricks[pi].box.x:=bricks[pi].box.x*w_width;
+							pBricks[pi].box.y:=bricks[pi].box.y*w_height;
 
 					end;
 					Close(Fb);
@@ -1066,8 +917,8 @@ begin
 				//ShowCursor(false);
 				Handle_Input;
 				TPrintText(bricks_count,390,8,2,15,25);
-				TPrintText(counter,0.86*width,0.43*height,0,10,20);
-				TPrintText(highs,0.82*width,0.12*height,0,15,25);
+				TPrintText(counter,0.86*w_width,0.43*w_height,0,10,20);
+				TPrintText(highs,0.82*w_width,0.12*w_height,0,15,25);
 			end;
 
 			OnExit;
@@ -1100,7 +951,7 @@ begin
 						Assign(Fb, filebool.filename_with_path);
 						Rewrite(Fb);
 						for i:=1 to 256 do
-                Write(Fb,  bricks[i]);
+                			Write(Fb,  bricks[i]);
 
 						Close(Fb);
 					end else begin
@@ -1158,7 +1009,7 @@ begin
   glUseProgram(ProgramObject);
   glBindTexture(GL_TEXTURE_2D, texture_Id);
   glGenerateMipmapEXT(GL_TEXTURE_2D);
-  draw_quad(0,0,width,height);
+  draw_quad(0,0,w_width,w_height);
   glUseProgram(0);
 end;
 
@@ -1194,10 +1045,12 @@ begin
 		w_height:=768;
 		w_mode:=2;
 	end;
+
+	Tproc := @GLWndProc;
+
+	CreateOGLWindow(Tproc, 'CollapseBall', w_width, w_height, 32,fullscreen);
 	
-	CreateOGLWindow('CollapseBall', w_width, w_height, 32,fullscreen);
-	
-	OpenGL_Init();
+	InitOpenGLParams( w_width, w_height );
 	InitOpenGL;
 	glBlendFunc(GL_SRC_ALPHA, GL_ONE_MINUS_SRC_ALPHA);
 	glEnable(GL_BLEND);
@@ -1205,26 +1058,9 @@ begin
 
 	GetSystemTime(@ftime);
 	
-	InitFBO(width, height, fbo_Id, texture_Id);
-	//////////////////////////////////////////////////////////////////////////////////
-	ProgramObject        := glCreateProgram();
-	VertexShaderObject   := glCreateShader(GL_VERTEX_SHADER);
-	FragmentShaderObject := glCreateShader(GL_FRAGMENT_SHADER);	
+	InitFBO(w_width, w_height, fbo_Id, texture_Id);
 
-	fs2:=textfileread('Data\Shaders\Bloom\g.fs');
-	vs2:=textfileread('Data\Shaders\Bloom\g.vs');
-
-	glShaderSource(VertexShaderObject, 1, @vs2, NIL);
-	glShaderSource(FragmentShaderObject, 1, @fs2, NIL);
-
-	glCompileShader(VertexShaderObject);
-	glCompileShader(FragmentShaderObject);
-
-	glAttachShader(ProgramObject, VertexShaderObject);
-	glAttachShader(ProgramObject, FragmentShaderObject);
-
-	glLinkProgram(ProgramObject);
-	//////////////////////////////////////////////////////////////////////////////////
+	ProgramObject        := LoadShader('FXAA');
 
 	Str(ftime.wYear, str1); Str(ftime.wMonth, str2); Str(ftime.wDay, str3);
 	date:=str1+'-'+str2+'-'+str3;
@@ -1250,6 +1086,8 @@ begin
   	tnrFont := BMFont.Create('Data\Fonts\tnr.fnt');
   	ilLoadFile( TGA_FILE, 'Data\Fonts\tnr_0.tga', font_texture_tnr );
   	tnrFont.SetTexturePointer( font_texture_tnr );
+
+  	GetFilenameFromPath('ololo/var/mds.pc');
 
 	repeat
 		QueryPerformanceCounter(TimerCount);
